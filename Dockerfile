@@ -3,20 +3,25 @@ FROM debian:stretch
 # Install git, supervisor, VNC, & X11 packages
 RUN set -ex; \
     apt-get update; \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
       bash \
       fluxbox \
       git \
       net-tools \
       novnc \
       socat \
+      sudo \
       supervisor \
       x11vnc \
       xterm \
       xvfb
 
+RUN adduser --disabled-password --gecos '' novnc
+RUN adduser novnc sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 # Setup demo environment variables
-ENV HOME=/root \
+ENV HOME=/home/novnc \
     DEBIAN_FRONTEND=noninteractive \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8 \
