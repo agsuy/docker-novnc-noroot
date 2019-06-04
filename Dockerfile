@@ -19,6 +19,9 @@ RUN set -ex; \
 RUN adduser --disabled-password --gecos '' novnc
 RUN adduser novnc sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN mkdir -p /home/novnc/logs
+RUN mkdir -p /home/novnc/pid
+RUN chown -R novnc:novnc /home/
 
 # Setup demo environment variables
 ENV HOME=/home/novnc \
@@ -31,6 +34,9 @@ ENV HOME=/home/novnc \
     DISPLAY_HEIGHT=768 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
+
 COPY . /app
-CMD ["/app/entrypoint.sh"]
 EXPOSE 8080
+
+USER novnc:novnc
+
