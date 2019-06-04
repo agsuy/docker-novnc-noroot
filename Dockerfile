@@ -40,3 +40,4 @@ EXPOSE 8080
 
 USER novnc:novnc
 
+WORKDIR /home/novnc
