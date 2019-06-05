@@ -1,12 +1,15 @@
 FROM debian:stretch
 
-# Install git, supervisor, VNC, & X11 packages
+# Install git, supervisor, VNC, X11 as well as ca, https and gnupg2 packages
 RUN set -ex; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
+      apt-transport-https \
       bash \
+      ca-certificates \
       fluxbox \
       git \
+      gnupg2 \
       net-tools \
       novnc \
       socat \
@@ -14,14 +17,21 @@ RUN set -ex; \
       supervisor \
       x11vnc \
       xterm \
-      xvfb
+      xvfb && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
+# Install chrome-stable
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - \
+  && echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
+  && apt-get update -qqy \
+  && apt-get -qqy install google-chrome-stable \
+  && rm /etc/apt/sources.list.d/google-chrome.list \
+  && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+
+# Create no-root user
 RUN adduser --disabled-password --gecos '' novnc
 RUN adduser novnc sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN mkdir -p /home/novnc/logs
-RUN mkdir -p /home/novnc/pid
-RUN chown -R novnc:novnc /home/
+RUN mkdir -p /home/novnc/logs /home/novnc/pid && chown -R novnc:novnc /home/
 
 # Setup demo environment variables
 ENV HOME=/home/novnc \
@@ -38,6 +48,6 @@ ENV HOME=/home/novnc \
 COPY . /app
 EXPOSE 8080
 
+# Set session
 USER novnc:novnc
-
 WORKDIR /home/novnc
