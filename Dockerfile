@@ -16,6 +16,7 @@ RUN set -ex; \
       sudo \
       supervisor \
       x11vnc \
+      xloadimage \
       xterm \
       xvfb && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
@@ -40,8 +41,8 @@ ENV HOME=/home/novnc \
     LANGUAGE=en_US.UTF-8 \
     LC_ALL=C.UTF-8 \
     DISPLAY=:0.0 \
-    DISPLAY_WIDTH=1024 \
-    DISPLAY_HEIGHT=768 \
+    DISPLAY_WIDTH=1920 \
+    DISPLAY_HEIGHT=1080 \
     RUN_XTERM=yes \
     RUN_FLUXBOX=yes
 
